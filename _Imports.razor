@@ -1,18 +1,26 @@
-﻿@using System.Net.Http
-@using System.Net.Http.Json
+﻿@using Blazored.LocalStorage
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.AspNetCore.Components.WebAssembly.Http
 @using Microsoft.JSInterop
-@using PKHeX.Web
-@using PKHeX.Web.Shared
 @using MudBlazor
-@using Blazored.LocalStorage
 @using PKHeX.Core
+@using PKHeX.Web
 @using PKHeX.Web.Services;
+@using PKHeX.Web.Shared
 @using PKHeX.Web.Shared.PokemonEditor
 @using PKHeX.Web.Shared.PokemonEditor.Main
 @using PKHeX.Web.Shared.SaveEditor
 @using System.IO
+@using System.Net.Http
+@using System.Net.Http.Json
+
+@inject ILocalStorageService LocalStorage
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject IJSRuntime JS
+@inject SavEdit SE
+@inject PkmEdit PE
+@inject SpriteService SpriteService

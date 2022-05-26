@@ -6,7 +6,7 @@ public partial class MainLayout
 
     protected override void OnInitialized() => SE.OnChange += StateHasChanged;
 
-    private readonly MudTheme MyCustomTheme = new MudTheme()
+    private readonly MudTheme MyCustomTheme = new()
     {
         Palette = new Palette()
         {
@@ -36,38 +36,35 @@ public partial class MainLayout
     {
         var obj = FileUtil.GetSupportedFile(input, ext, SE.SAV);
         if (obj != null && LoadFile(obj, path))
+        {
             return;
+        }
 
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
         //TODO: more specific message in case of pokémon
         Snackbar.Add("Could not open file", MudBlazor.Severity.Error);
     }
 
-    private bool LoadFile(object? input, string path)
+    private bool LoadFile(object? input, string path) => input != null && input switch
     {
-        if (input == null)
-            return false;
+        PKM pk => OpenPKM(pk),
+        SaveFile s => OpenSAV(s, path),
+        //IPokeGroup b => OpenGroup(b),
+        //MysteryGift g => OpenMysteryGift(g, path),
+        //IEnumerable<byte[]> pkms => OpenPCBoxBin(pkms),
+        //IEncounterConvertible enc => OpenPKM(enc.ConvertToPKM(C_SAV.SAV)),
+        SAV3GCMemoryCard gc => HandleGameCubeMemoryCardSave(gc, path),
+        _ => false,
+    };
 
-        switch (input)
-        {
-            case PKM pk: return OpenPKM(pk);
-            case SaveFile s:
-                return OpenSAV(s, path);
-                //     case IPokeGroup b: return OpenGroup(b);
-                //case MysteryGift g: return OpenMysteryGift(g, path);
-                //case IEnumerable<byte[]> pkms: return OpenPCBoxBin(pkms);
-                //case IEncounterConvertible enc: return OpenPKM(enc.ConvertToPKM(C_SAV.SAV));
-
-                //case SAV3GCMemoryCard gc:
-                //    if (!CheckGCMemoryCard(gc, path))
-                //        return true;
-                //    var mcsav = SaveUtil.GetVariantSAV(gc);
-                //    if (mcsav is null)
-                //        return false;
-                //    return OpenSAV(mcsav, path); 
-        }
-        return false;
-    }
+    private bool HandleGameCubeMemoryCardSave(SAV3GCMemoryCard gc, string path) =>
+        //if (!CheckGCMemoryCard(gc, path))
+        //{
+        //    return true;
+        //}
+        //var mcsav = SaveUtil.GetVariantSAV(gc);
+        //return mcsav is not null && OpenSAV(mcsav, path);
+        false;
 
     private bool OpenPKM(PKM pk) =>
         //var tmp = PKMConverter.ConvertToType(pk, SE.SAV.PKMType, out string c);
@@ -116,11 +113,7 @@ public partial class MainLayout
 
     private void OpenSettings() => DialogService.Show<Settings>("Settings");
 
-    private void OpenAbout()
-    {
-        var options = new DialogOptions { CloseButton = true };
-        DialogService.Show<About>("About", options);
-    }
+    private void OpenAbout() => DialogService.Show<About>("About", new DialogOptions { CloseButton = true });
 
     public void Dispose() => SE.OnChange -= StateHasChanged;
 }
