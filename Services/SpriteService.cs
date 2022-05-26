@@ -1,48 +1,54 @@
-using System.Net.Http.Json;
-using PKHeX.Core;
+namespace PKHeX.Web.Services;
 
-namespace PKHeX.Web.Services
+public class SpriteService
 {
-  public class SpriteService
-  {
     public IReadOnlyDictionary<string, string>? Items { get; internal set; }
 
     public IReadOnlyDictionary<string, PokemonSprite>? Pokemon { get; internal set; }
 
     public async Task InitializeServiceAsync(HttpClient httpClient)
     {
-      var itemsTask = httpClient.GetFromJsonAsync<IReadOnlyDictionary<string, string>>("assets/data/item-map.json");
-      var pokemonsTask = httpClient.GetFromJsonAsync<IReadOnlyDictionary<string, PokemonSprite>>("assets/data/pokemon.json");
+        try
+        {
+            var itemsTask = httpClient.GetFromJsonAsync<IReadOnlyDictionary<string, string>>("assets/data/item-map.json");
+            var pokemonsTask = httpClient.GetFromJsonAsync<IReadOnlyDictionary<string, PokemonSprite>>("assets/data/pokemon.json");
 
-      Items = await itemsTask;
-      Pokemon = await pokemonsTask;
+            Items = await itemsTask;
+            Pokemon = await pokemonsTask;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     public string GetItem(int spriteId)
     {
-      if (spriteId == 0) return "";
+        if (spriteId == 0)
+        {
+            return "";
+        }
 
-      var key = $"item_{spriteId:0000}";
-      return $"assets/items/{Items![key]}.png";
+        var key = $"item_{spriteId:0000}";
+        return $"assets/items/{Items?[key]}.png";
     }
 
     public string GetPokemon(PKM pkm)
     {
-      string key = pkm.Species.ToString("000");
-      var spriteInfo = Pokemon![key];
+        var key = pkm.Species.ToString("000");
+        var spriteInfo = Pokemon?[key];
 
-      string shinyOrRegular = pkm.IsShiny ? "shiny" : "regular";
-      string femaleSprite = spriteInfo.HasFemaleForm && pkm.GetSaneGender() == (int)Gender.Female ? "female/" : "";
+        var shinyOrRegular = pkm.IsShiny ? "shiny" : "regular";
+        var femaleSprite = spriteInfo is { HasFemaleForm: true } && pkm.GetSaneGender() == (int)Gender.Female ? "female/" : "";
 
-      return $"assets/pokemon-gen8/{shinyOrRegular}/{femaleSprite}{spriteInfo.Slug}.png";
+        return $"assets/pokemon-gen8/{shinyOrRegular}/{femaleSprite}{spriteInfo?.Slug}.png";
     }
 
     public string GetPokemonBySpeciesId(int speciesId)
     {
-      string key = speciesId.ToString("000");
-      return $"assets/pokemon-gen8/regular/{Pokemon![key].Slug}.png";
+        var key = speciesId.ToString("000");
+        return $"assets/pokemon-gen8/regular/{Pokemon?[key].Slug}.png";
     }
-  }
-
-  public record PokemonSprite(string Slug, bool HasFemaleForm);
 }
+
+public record PokemonSprite(string Slug, bool HasFemaleForm);

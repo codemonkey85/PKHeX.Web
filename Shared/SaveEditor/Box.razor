@@ -3,60 +3,25 @@
 @implements IDisposable
 
 @{
-  var saveFile = SE.SAV;
-  var currentBox = saveFile.CurrentBox;
-  var slotCount = saveFile.BoxSlotCount;
+    var saveFile = SE.SAV;
+    var currentBox = saveFile.CurrentBox;
+    var slotCount = saveFile.BoxSlotCount;
 }
 
 <div class="d-flex flex-col">
-  <MudIconButton @onclick="GoBack" Icon="@Icons.Material.Filled.ArrowBack" Variant="Variant.Filled"
-    Color="Color.Primary" Size="Size.Large" Class="ma-2" />
-  <MudSelect T="int" @bind-Value="@saveFile.CurrentBox" Variant="Variant.Outlined"
-    ToStringFunc="@(e => saveFile.GetBoxName(e))" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Dense
-    Class="my-auto">
-    @for (var boxIndex = 0; boxIndex < saveFile.BoxCount; boxIndex++)
-    {
-      <MudSelectItem Value="boxIndex" />
-    }
-  </MudSelect>
-  <MudIconButton @onclick="GoForward" Icon="@Icons.Material.Filled.ArrowForward" Variant="Variant.Filled"
-    Color="Color.Primary" Size="Size.Large" Class="ma-2" />
+    <MudIconButton @onclick="GoBack" Icon="@Icons.Material.Filled.ArrowBack" Variant="Variant.Filled"
+                   Color="Color.Primary" Size="Size.Large" Class="ma-2" />
+    <MudSelect T="int" @bind-Value="@saveFile.CurrentBox" Variant="Variant.Outlined"
+               ToStringFunc="@(e => saveFile.GetBoxName(e))" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Dense
+               Class="my-auto">
+        @for (var boxIndex = 0; boxIndex < saveFile.BoxCount; boxIndex++)
+        {
+            <MudSelectItem Value="boxIndex" />
+        }
+    </MudSelect>
+    <MudIconButton @onclick="GoForward" Icon="@Icons.Material.Filled.ArrowForward" Variant="Variant.Filled"
+                   Color="Color.Primary" Size="Size.Large" Class="ma-2" />
 </div>
 
 <PokemonGrid PokemonList="saveFile.GetBoxData(currentBox)" RowSize="slotCount / 5" Cells="slotCount"
-  SetPokemon="SetPokemon" />
-
-@code {
-  protected override void OnInitialized()
-  {
-    SE.OnChange += StateHasChanged;
-  }
-
-  protected void GoBack()
-  {
-    var currentBox = SE.SAV.CurrentBox;
-    var boxCount = SE.SAV.BoxCount;
-
-    SE.SAV.CurrentBox = (currentBox + boxCount - 1) % boxCount;
-  }
-
-  protected void GoForward()
-  {
-    var currentBox = SE.SAV.CurrentBox;
-    var boxCount = SE.SAV.BoxCount;
-
-    SE.SAV.CurrentBox = (currentBox + 1) % boxCount;
-  }
-
-  protected void SetPokemon(int index)
-  {
-    var currentBox = SE.SAV.CurrentBox;
-    SE.SAV.SetBoxSlotAtIndex(PE.PKM, currentBox, index);
-    SE.NotifyDataChanged();
-  }
-
-  public void Dispose()
-  {
-    SE.OnChange -= StateHasChanged;
-  }
-}
+             SetPokemon="SetPokemon" />

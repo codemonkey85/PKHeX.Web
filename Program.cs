@@ -1,12 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using MudBlazor.Services;
-using PKHeX.Web;
-using PKHeX.Web.Services;
-using PKHeX.Core;
-using Blazored.LocalStorage;
-
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
+﻿var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
@@ -33,8 +25,8 @@ var localStorageService = host.Services.GetRequiredService<ILocalStorageService>
 var storedGameVersion = await localStorageService.GetItemAsync<GameVersion>("BlankVersion");
 if (storedGameVersion == 0)
 {
-  storedGameVersion = GameVersion.BD;
-  await localStorageService.SetItemAsync("BlankVersion", storedGameVersion);
+    storedGameVersion = GameVersion.BD;
+    await localStorageService.SetItemAsync("BlankVersion", storedGameVersion);
 }
 savEdit.SAV = SaveUtil.GetBlankSAV(storedGameVersion, "PKHeX");
 pkmEdit.PKM = savEdit.SAV.LoadTemplate();

@@ -3,21 +3,3 @@
 @implements IDisposable
 
 <PokemonGrid PokemonList="SE.SAV.PartyData" RowSize="2" Cells="6" SetPokemon="SetPokemon" />
-
-@code {
-    protected override void OnInitialized()
-    {
-        SE.OnChange += StateHasChanged;
-    }
-
-    protected void SetPokemon(int index)
-    {
-        SE.SAV.SetPartySlotAtIndex(PE.PKM, index);
-        SE.NotifyDataChanged();
-    }
-
-    public void Dispose()
-    {
-        SE.OnChange -= StateHasChanged;
-    }
-}

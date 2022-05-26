@@ -1,0 +1,12 @@
+﻿global using Blazored.LocalStorage;
+global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.Forms;
+global using Microsoft.AspNetCore.Components.Web;
+global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+global using Microsoft.JSInterop;
+global using MudBlazor;
+global using MudBlazor.Services;
+global using PKHeX.Core;
+global using PKHeX.Web;
+global using PKHeX.Web.Services;
+global using System.Net.Http.Json;
